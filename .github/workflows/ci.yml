@@ -1,0 +1,82 @@
+# Pharmaceutical Packaging Inventory — CI
+# MySQL 8 + docs/01_database_schema.sql -> mvn verify (unit + database integration tests, runnable jar)
+# -> console app driven through its menu -> Swing GUI launched under Xvfb.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build, unit + database tests, console + GUI checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DB_URL: jdbc:mysql://127.0.0.1:3306/pharma_inventory?useSSL=false&allowPublicKeyRetrieval=true
+      DB_USER: root
+      DB_PASSWORD: root
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Load database (schema + sample data)
+        run: |
+          mysql -h 127.0.0.1 -uroot -proot --default-character-set=utf8mb4 < docs/01_database_schema.sql
+          mysql -h 127.0.0.1 -uroot -proot pharma_inventory -e "SHOW FULL TABLES; SELECT material_code, stock_status FROM inventory_summary;"
+
+      - name: Build and test (mvn verify)
+        run: mvn -B -ntp verify
+
+      - name: Console app - dashboard, transactions, suppliers, exit
+        run: |
+          printf '1\n5\n6\n0\n' | java -cp target/pharma-inventory.jar com.pharma.inventory.app.InventoryManagementApp | tee console.log
+          grep -q "BLS-001" console.log
+          grep -q "NORMAL" console.log
+          grep -q "ABC Packaging Ltd" console.log
+          ! grep -q "Error" console.log
+
+      - name: GUI launch check (must still be running after 20 s)
+        run: |
+          sudo apt-get install -y -qq xvfb > /dev/null
+          set +e
+          timeout 20 xvfb-run -a java -jar target/pharma-inventory.jar > gui.log 2>&1
+          code=$?
+          cat gui.log
+          if [ "$code" = "124" ]; then echo "GUI started and was still running - OK"; exit 0; fi
+          echo "GUI exited early with code $code"; exit 1
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            target/surefire-reports
+            target/failsafe-reports
+          if-no-files-found: ignore
+
+      - name: Upload runnable jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: pharma-inventory-jar
+          path: target/pharma-inventory.jar
