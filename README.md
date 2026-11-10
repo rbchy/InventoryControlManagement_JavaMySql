@@ -1,691 +1,395 @@
-# Pharmaceutical Packaging Inventory Management System
+<div align="center">
 
-![Java](https://img.shields.io/badge/Java-17+-orange?logo=java)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?logo=mysql)
-![JDBC](https://img.shields.io/badge/JDBC-Driver-green)
-![Maven](https://img.shields.io/badge/Maven-Build-red)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
-![Status](https://img.shields.io/badge/Status-Active-brightgreen)
+# 📦 Pharmaceutical Packaging Inventory Management
 
-**Author:** Ranajit Baran Chowdhury (RB Chowdhury)  
-**Profile:** QA Automation Engineer & Full Stack Developer  
-**Email:** chyranajit@gmail.com  
-**GitHub:** [@rbchy](https://github.com/rbchy) | [@ranajitchowdhury](https://github.com/ranajitchowdhury)  
-**Portfolio:** [rbc6543.wixsite.com/rbc-portfolio](https://rbc6543.wixsite.com/rbc-portfolio)  
-**LinkedIn:** [linkedin.com/in/rbchy](https://linkedin.com/in/rbchy)
+### Java Swing + console app on MySQL for packaging materials (blister film, bottles, cartons, labels, foil): stock levels, receipts and issues, low-stock alerts and reports
 
-A comprehensive **real-time inventory management system** built with **Java 17**, **MySQL 8.0**, and **JDBC**. This enterprise-grade application delivers end-to-end pharmaceutical packaging inventory tracking — covering secure authentication, material management, supplier relationships, stock transaction recording, and automated purchase order processing.
+[![Typing SVG](https://readme-typing-svg.demolab.com/?font=Fira+Code&size=18&pause=1500&color=0EA5E9&center=true&vCenter=true&width=900&repeat=true&lines=Java+%C2%B7+Swing+%C2%B7+JDBC+%C2%B7+MySQL+8;CRITICAL+%C2%B7+WARNING+%C2%B7+NORMAL+%C2%B7+OVERSTOCK;33+%2F+33+tests+green+%C2%B7+console+%2B+GUI+checked+in+CI)](https://git.io/typing-svg)
 
----
+<!-- ============ STATUS BAR ============ -->
+[![CI](https://github.com/rbchy/InventoryControlManagement_JavaMySql/actions/workflows/ci.yml/badge.svg)](https://github.com/rbchy/InventoryControlManagement_JavaMySql/actions/workflows/ci.yml)
+![Tests](https://img.shields.io/badge/Tests-33%20%2F%2033%20passed-22c55e?style=for-the-badge&logo=checkmarx&logoColor=white)
+![Domain](https://img.shields.io/badge/Domain-Pharma%20Packaging%20%C2%B7%20GMP-155e75?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-lightgrey?style=for-the-badge)
 
-## 📋 Quick Overview
+![Java](https://img.shields.io/badge/Java-11%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Swing](https://img.shields.io/badge/Swing-Desktop%20GUI-6d28d9?style=for-the-badge)
+![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![JDBC](https://img.shields.io/badge/JDBC-Connector%2FJ-0ea5e9?style=for-the-badge)
+![JUnit 5](https://img.shields.io/badge/JUnit%205-5.10-25A162?style=for-the-badge&logo=junit5&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
 
-| Component | Technology | Version |
-|-----------|-----------|---------|
-| **Language** | Java (Core OOP) | 17+ |
-| **Database** | MySQL | 8.0+ |
-| **Connectivity** | JDBC (MySQL Connector/J) | 9.7.0 |
-| **Architecture** | DAO + Service + MVC | Enterprise Pattern |
-| **Build Tool** | Maven (Optional) | Latest |
-| **IDEs Supported** | IntelliJ IDEA, Eclipse, VS Code | Latest |
-| **OS Support** | macOS, Windows, Linux | All |
+![Last Commit](https://img.shields.io/github/last-commit/rbchy/InventoryControlManagement_JavaMySql?style=flat-square&color=0ea5e9&label=Last%20commit)
+![Repo Size](https://img.shields.io/github/repo-size/rbchy/InventoryControlManagement_JavaMySql?style=flat-square&color=155e75&label=Repo%20size)
+
+</div>
 
 ---
 
-## ✨ Key Features
+## 📌 At a Glance
 
-### 🔐 Secure Authentication & Access Control
-- User login and signup with credential validation
-- Role-based session management
-- Secure database connection with error handling
-- Encrypted credential storage mechanisms
+<table>
+<tr>
+<td width="50%" valign="top">
 
-### 📦 Material Inventory Management
-- Full CRUD operations — Add, Read, Update, Delete materials
-- Material categorization and detailed metadata
-- Stock level thresholds (Min/Max/Reorder Point)
-- Real-time availability tracking with reserved quantities
-- Material pricing and status management
+**🙋 What this is**
 
-### 📊 Real-Time Stock Tracking
-- Live inventory dashboard with visual status indicators
-  - 🟢 **NORMAL** — Stock within acceptable range
-  - 🟡 **HIGH** — Overstock situation
-  - 🔴 **LOW** — Urgent reorder required
-- Available quantity calculation (Current - Reserved)
-- Warehouse location tracking
-- Last received date and history
+An inventory system for the **packaging materials** of a pharmaceutical packaging line. It is built from the way a GMP packaging floor actually handles material:
 
-### 💼 Supplier Management
-- Supplier database with complete contact information
-- Payment terms and rating system (1-5 stars)
-- City and region-based supplier filtering
-- Contact person and email management
-- Quality rating and performance tracking
+- every material has a **min level, a reorder point and a max level**;
+- every stock movement is a **RECEIPT, ISSUE, USED** (consumed in a batch) **or RETURN**, with a batch or PO reference;
+- each movement is recorded in **one database transaction** together with the stock change, so stock can never go below zero.
 
-### 🔄 Stock Transaction Tracking
-- Comprehensive transaction logging (INBOUND/OUTBOUND)
-- Transaction types: Purchase Orders, Production, Returns, Adjustments
-- Reference number and type tracking
-- Transaction date and user attribution
-- Historical audit trail for compliance
+It has two front ends on the same MySQL database: a **Swing desktop app** with 12 tabs, and a **Bangla console menu**.
 
-### 🛒 Purchase Order Management
-- PO creation and tracking
-- Supplier assignment and delivery date management
-- Order status tracking (PENDING, CONFIRMED, DELIVERED)
-- Total amount calculation and cost tracking
-- Expected vs. actual delivery date comparison
+On every push, GitHub Actions loads the schema into **MySQL 8**, runs the unit and database tests, drives the console menu, and opens the GUI under a virtual display.
 
-### 📈 Advanced Analytics & Reporting
-- Stock status reports with status indicators
-- Low stock alert system for proactive reordering
-- Transaction history and trend analysis
-- Supplier performance reports
-- Material consumption patterns
+</td>
+<td width="50%" valign="top">
 
-### 💾 Database Integration
-- MySQL-based persistent storage
-- Efficient data retrieval using JDBC with connection pooling
-- Transaction management with rollback capabilities
-- Data integrity with foreign key constraints
-- Optimized queries for large datasets
+**📍 Quick facts**
+
+| | |
+|---|---|
+| 🖥️ **GUI** | Swing, login / register + 12 tabs |
+| ⌨️ **Console** | বাংলা menu: dashboard, transactions, suppliers |
+| 💾 **Database** | MySQL 8 · 11 tables · 3 views |
+| 🧪 **Tests** | 22 unit · 11 MySQL integration |
+| ✅ **CI** | 33 / 33 + console + GUI · ≈ 1.5 min |
+| 🔐 **Login** | Salted SHA-256, no credentials in code |
+| 📚 **Docs** | Bangla guides in [`docs/guides`](docs/guides) |
+
+</td>
+</tr>
+</table>
 
 ---
 
-## 🏗️ System Architecture
+## ✅ Latest Results
 
-```
-┌─────────────────────────────────────────────────────────┐
-│         InventoryManagementApp (Main Entry)             │
-└──────────────────────┬──────────────────────────────────┘
-                       │
-                       ▼
-        ┌──────────────────────────────────┐
-        │  InventoryManagementApp UI       │
-        │  (Menu-Driven Interface)         │
-        └──────────────────┬───────────────┘
-                           │
-            ┌──────────────┼──────────────┐
-            │              │              │
-            ▼              ▼              ▼
-    ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-    │   Inventory  │ │  Suppliers   │ │  Materials   │
-    │   Service    │ │  Service     │ │  Service     │
-    └──────┬───────┘ └──────┬───────┘ └──────┬───────┘
-           │                │                │
-    ┌──────┴────────────────┼────────────────┴───────┐
-    │                       │                        │
-    ▼                       ▼                        ▼
-┌─────────────┐      ┌─────────────┐      ┌────────────────┐
-│InventoryDAO│      │SupplierDAO  │      │ MaterialDAO    │
-│             │      │             │      │                │
-└──────┬──────┘      └──────┬──────┘      └────────┬───────┘
-       │                    │                      │
-       └────────────────────┼──────────────────────┘
-                            │
-                    ┌───────▼────────┐
-                    │ DatabaseConfig │
-                    │   JDBC Layer   │
-                    └───────┬────────┘
-                            │
-                    ┌───────▼────────────┐
-                    │  MySQL Database    │
-                    │  (pharma_inventory)│
-                    └────────────────────┘
+| Suite | Runs against | Result |
+|---|---|---|
+| `StockStatusTest` | CRITICAL / WARNING / NORMAL / OVERSTOCK at every boundary, plus the sample data | ✅ 11 / 11 |
+| `MaterialValidatorTest` | required fields, price ≥ 0, max > min, min ≤ reorder ≤ max, lead time | ✅ 7 / 7 |
+| `PasswordUtilTest` | salt:hash format, unique salts, the three demo logins, plaintext never matches | ✅ 4 / 4 |
+| `InventoryDatabaseIT` (MySQL 8) | logins and registration, RECEIPT / ISSUE / USED / RETURN, rollback when stock is short, bad movements refused, add → alert → soft delete, **Java status = SQL view status for every material**, every report, inclusive date filter | ✅ 11 / 11 |
+| Console check | menu `1 → 5 → 6 → 0` prints the dashboard, transactions and suppliers with no errors | ✅ |
+| GUI launch check | `java -jar target/pharma-inventory.jar` is still running after 20 s under Xvfb | ✅ |
+
+```mermaid
+pie showData title Automated tests (33)
+    "StockStatus rules" : 11
+    "MaterialValidator" : 7
+    "PasswordUtil" : 4
+    "MySQL integration" : 11
 ```
 
-### **Layered Architecture:**
+---
 
+## 📊 Sample Data at a Glance
+
+`docs/01_database_schema.sql` ships with 5 materials, 5 categories, 3 suppliers and 3 users.
+
+```mermaid
+pie showData title Stock value by category (USD = on hand × unit price)
+    "Blister Packs" : 12500
+    "Labels" : 4000
+    "Bottles & Caps" : 2800
+    "Cartons" : 2400
+    "Others (foil)" : 450
 ```
-┌─────────────────────────────────────┐
-│     Presentation Layer              │
-│  (InventoryManagementApp - CLI)     │
-└─────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────┐
-│     Service Layer                   │
-│  (InventoryService, Business Logic) │
-└─────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────┐
-│     DAO (Data Access) Layer         │
-│  (MaterialDAO, InventoryDAO, etc.)  │
-└─────────────────────────────────────┘
-              ↓
-┌─────────────────────────────────────┐
-│     Database Layer                  │
-│  (MySQL with JDBC Connectivity)     │
-└─────────────────────────────────────┘
+
+```mermaid
+xychart-beta
+    title "On hand (bars) vs reorder point (dark line) vs max level (light line)"
+    x-axis ["BLS-001", "BOT-001", "CAR-001", "LBL-001", "ALU-001"]
+    y-axis "Pieces / rolls" 0 --> 16000
+    bar [5000, 3500, 2000, 8000, 150]
+    line [3000, 2000, 1500, 5000, 100]
+    line [10000, 6000, 5000, 15000, 200]
+```
+
+| Code | Material | On hand | Reserved | Available | Min | Reorder | Max | Status |
+|---|---|--:|--:|--:|--:|--:|--:|:--:|
+| BLS-001 | Blister Pack PVC 10 cavity | 5,000 | 500 | 4,500 | 1,000 | 3,000 | 10,000 | 🟢 NORMAL |
+| BOT-001 | Bottle 20 ml HDPE | 3,500 | 200 | 3,300 | 800 | 2,000 | 6,000 | 🟢 NORMAL |
+| CAR-001 | Carton Box 100×100 mm | 2,000 | 100 | 1,900 | 500 | 1,500 | 5,000 | 🟢 NORMAL |
+| LBL-001 | Label Printed 50×30 mm | 8,000 | 1,000 | 7,000 | 2,000 | 5,000 | 15,000 | 🟢 NORMAL |
+| ALU-001 | Aluminium Foil Strip 500 m | 150 | 20 | 130 | 50 | 100 | 200 | 🟢 NORMAL |
+
+---
+
+## 🚦 How Stock Status Works
+
+There is one rule, `model/StockStatus.java`. The `inventory_summary` view uses the same rule as a SQL `CASE`, and a test checks that the two agree for every material.
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    [*] --> NORMAL
+    NORMAL --> WARNING : on hand <= reorder point
+    WARNING --> CRITICAL : on hand <= min level
+    CRITICAL --> WARNING : RECEIPT above min
+    WARNING --> NORMAL : RECEIPT above reorder point
+    NORMAL --> OVERSTOCK : on hand >= max level
+    OVERSTOCK --> NORMAL : ISSUE / USED below max
+```
+
+| Status | Rule (checked in this order) | What to do |
+|---|---|---|
+| 🔴 **CRITICAL** | on hand ≤ min level | Reorder urgently, and check whether the line can run |
+| 🟠 **WARNING** | on hand ≤ reorder point | Raise a purchase order (shows in **Low Stock Alerts**) |
+| 🟡 **OVERSTOCK** | on hand ≥ max level | Stop ordering and check warehouse space |
+| 🟢 **NORMAL** | otherwise | — |
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+flowchart LR
+    U([Store keeper / Manager]) --> G[Swing GUI<br/>PharmaInventoryGUI<br/>login + 12 tabs]
+    U --> C[Console app<br/>InventoryManagementApp<br/>বাংলা menu]
+    G --> V[MaterialValidator<br/>StockStatus]
+    C --> S[InventoryService]
+    S --> V
+    G --> D[DAOs<br/>Material · Inventory · Supplier<br/>Category · User · Report]
+    S --> D
+    D --> CFG[DatabaseConfig<br/>DB_URL / DB_USER / DB_PASSWORD]
+    CFG --> DB[(MySQL 8<br/>pharma_inventory<br/>11 tables · 3 views)]
+```
+
+### 🔄 Recording a stock movement (one transaction)
+
+```mermaid
+sequenceDiagram
+    participant T as Transactions tab
+    participant D as InventoryDAO
+    participant DB as MySQL
+    T->>D: recordTransaction(material, ISSUE, 200, "MO-1042", PRODUCTION)
+    D->>D: quantity > 0? type is RECEIPT / ISSUE / USED / RETURN?
+    D->>DB: BEGIN · SELECT current_quantity … FOR UPDATE
+    alt new quantity would be < 0
+        D->>DB: ROLLBACK
+        D-->>T: "Insufficient stock: only 150 on hand."
+    else
+        D->>DB: UPDATE inventory (quantity, last issued / received date)
+        D->>DB: INSERT stock_transactions (type, qty, reference, user)
+        D->>DB: COMMIT
+        D-->>T: ✓ saved, then tabs refresh
+    end
+```
+
+### 🗄️ Database
+
+```mermaid
+erDiagram
+    SUPPLIERS ||--o{ MATERIALS : supplies
+    MATERIAL_CATEGORIES ||--o{ MATERIALS : groups
+    MATERIALS ||--|| INVENTORY : "stocked as"
+    MATERIALS ||--o{ STOCK_TRANSACTIONS : moves
+    SUPPLIERS ||--o{ PURCHASE_ORDERS : receives
+    PURCHASE_ORDERS ||--o{ PO_ITEMS : contains
+    MATERIALS ||--o{ PO_ITEMS : ordered
+    MATERIALS ||--o{ INVENTORY_AUDIT_LOG : counted
+    PRODUCTION_ORDERS ||--o{ MO_MATERIALS : needs
+    MATERIALS ||--o{ MO_MATERIALS : consumed
+    MATERIALS {
+        int material_id PK
+        varchar material_code UK
+        varchar material_name
+        int min_stock_level
+        int reorder_point
+        int max_stock_level
+        decimal current_price
+        varchar status "ACTIVE or INACTIVE"
+    }
+    INVENTORY {
+        int material_id FK
+        int current_quantity
+        int reserved_quantity
+        int available_quantity "generated"
+        varchar warehouse_location
+    }
+    STOCK_TRANSACTIONS {
+        int transaction_id PK
+        varchar transaction_type "RECEIPT ISSUE USED RETURN"
+        int quantity
+        varchar reference_number
+        varchar reference_type
+    }
+```
+
+Views:
+- `low_stock_items`: active materials at or below their reorder point
+- `inventory_summary`: stock value and status for active materials
+- `recent_transactions`: the last 100 movements
+
+`users` stands alone. Purchase-order, audit and production-order tables are in the schema for the roadmap; no screen uses them yet.
+
+---
+
+## ✨ Features
+
+| Tab / menu | What it does |
+|---|---|
+| 🔐 **Login / Register** | Salted SHA-256 passwords. Self-registration is limited to OPERATOR and MANAGER. The error message is generic, so usernames cannot be probed. |
+| 🏠 **Welcome** | Dashboard cards: active materials, suppliers, number of items that need reordering |
+| ➕ **Add / ✏️ Update Material** | Code, name, category, supplier, unit, price, min / reorder / max, lead time, opening stock, warehouse location. Every value is validated before it is saved. |
+| 📋 **View / 🔍 Search / 🗑️ Delete** | Table of active materials. Search by code or name (`_` and `%` are matched literally). **Soft delete**: the material is marked INACTIVE, so its history stays. |
+| 🔄 **Transactions** | Record a RECEIPT, ISSUE, USED or RETURN with a batch / PO reference, and see recent movements |
+| ⚠️ **Low Stock Alerts** | Active materials at or below their reorder point, with the quantity to order to reach max, and the supplier |
+| 📊 **Reports** | Inventory In / Out / Used / Return with a date range, Stock Update, Min Level and Max Level breaches |
+| 🏢 **Suppliers** · ❓ **Help** · ♻️ **Refresh** | Supplier list, built-in help on the status colours, reload of every tab |
+| ⌨️ **Console** | `1` dashboard · `5` transactions · `6` suppliers · `0` exit, in Bangla |
+
+```mermaid
+pie showData title Source lines by layer (3,778 in 39 classes)
+    "GUI - Swing (20 classes)" : 2465
+    "DAO (7)" : 777
+    "Model (8)" : 245
+    "Util (2)" : 116
+    "Config, Service, App" : 175
 ```
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **Language** | Java 17 (Core OOP) | Type-safe, modern syntax, enhanced performance |
-| **Database** | MySQL 8.0 | ACID-compliant relational database |
-| **Connectivity** | JDBC + MySQL Connector/J 9.7.0 | Secure database communication |
-| **Architecture** | DAO + Service Pattern | Clean separation of concerns |
-| **Build** | Maven (Optional) | Dependency management and build automation |
-| **Version Control** | Git/GitHub | Collaborative development |
-
-### **Dependencies:**
-```
-MySQL Connector/J 9.7.0 (JDBC Driver)
-Java 17 JDK
-MySQL Server 8.0+
-```
+| Layer | Technology |
+|---|---|
+| Language | Java 11+ (CI builds on 17) |
+| UI | Swing (custom theme, background banner, tabbed layout) and a console menu |
+| Data access | JDBC with `PreparedStatement`, `SELECT … FOR UPDATE` for stock movements |
+| Database | MySQL 8: generated `available_quantity` column, 3 views |
+| Build | Maven (keeps the Eclipse `src/` layout), shaded runnable jar with the MySQL driver |
+| Tests | JUnit 5 (Surefire), Failsafe for `*IT` against MySQL |
+| CI | GitHub Actions: MySQL 8 service, `mvn verify`, scripted console run, Xvfb GUI launch, jar and reports as artifacts |
 
 ---
 
-## ✅ Prerequisites
+## ⚙️ Getting Started
 
-Before setting up the project, ensure you have installed:
-
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **JDK** | 17 or higher | Java compilation and runtime |
-| **MySQL Server** | 8.0 or higher | Database engine |
-| **MySQL Connector/J** | 9.7.0 | JDBC driver |
-| **Git** | Latest | Version control |
-| **IDE** | IntelliJ IDEA / Eclipse | Development environment |
-
-### **Verification:**
+**You need:** JDK 11 or newer, MySQL 8, and Maven 3.8+ (or use the `run_*.sh` scripts and the driver in `lib/`).
 
 ```bash
-# Check Java version
-java -version
-# Expected output: openjdk version "17.x.x"
+# 1. Database: drops and recreates every table in pharma_inventory, then loads sample data
+mysql -u root -p --default-character-set=utf8mb4 < docs/01_database_schema.sql
 
-# Check MySQL version
-mysql --version
-# Expected output: mysql Ver 8.0.xxx
+# 2. Credentials (never written in the code; see .env.example)
+export DB_URL="jdbc:mysql://localhost:3306/pharma_inventory?useSSL=false&allowPublicKeyRetrieval=true"
+export DB_USER=root DB_PASSWORD='your-password'
 
-# Verify MySQL is running
-mysql -u root -p -e "SELECT VERSION();"
+# 3a. Build, test, run the GUI
+mvn verify                                   # database tests run too when DB_URL is set
+java -jar target/pharma-inventory.jar
+
+# 3b. ...or without Maven
+./run_gui.sh          # Swing GUI
+./run_console.sh      # console menu
 ```
 
----
+**From Eclipse:** import as an existing project, then use the `PharmaInventoryGUI` or `InventoryManagementApp` launch configuration. Set `DB_PASSWORD` under *Run Configurations → Environment*.
 
-## 🚀 Installation & Setup
+**Demo logins:**
 
-### **Step 1 — Download MySQL Connector/J 9.7.0**
-
-```bash
-# Option A: Download from Maven Central
-# Visit: https://dev.mysql.com/downloads/connector/j/
-
-# Option B: Extract uploaded tar.gz
-cd ~/Downloads
-tar -xzf mysql-connector-j-9_7_0_tar.gz
-```
-
-### **Step 2 — Set Up Database**
-
-Open MySQL terminal:
-
-```bash
-mysql -u root -p
-```
-
-Execute SQL:
-
-```sql
--- Create database
-CREATE DATABASE IF NOT EXISTS pharma_inventory;
-USE pharma_inventory;
-
--- Materials table
-CREATE TABLE IF NOT EXISTS materials (
-    material_id INT AUTO_INCREMENT PRIMARY KEY,
-    material_code VARCHAR(50) UNIQUE NOT NULL,
-    material_name VARCHAR(200) NOT NULL,
-    category_id INT,
-    description TEXT,
-    min_stock_level INT DEFAULT 100,
-    max_stock_level INT DEFAULT 5000,
-    reorder_point INT DEFAULT 500,
-    current_price DECIMAL(10,2),
-    status VARCHAR(20) DEFAULT 'ACTIVE',
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Inventory table
-CREATE TABLE IF NOT EXISTS inventory (
-    inventory_id INT AUTO_INCREMENT PRIMARY KEY,
-    material_id INT NOT NULL UNIQUE,
-    current_quantity INT DEFAULT 0,
-    reserved_quantity INT DEFAULT 0,
-    warehouse_location VARCHAR(100),
-    last_received_date TIMESTAMP,
-    FOREIGN KEY (material_id) REFERENCES materials(material_id)
-);
-
--- Suppliers table
-CREATE TABLE IF NOT EXISTS suppliers (
-    supplier_id INT AUTO_INCREMENT PRIMARY KEY,
-    supplier_name VARCHAR(200) NOT NULL,
-    contact_person VARCHAR(100),
-    email VARCHAR(100),
-    phone VARCHAR(20),
-    address TEXT,
-    city VARCHAR(50),
-    payment_terms VARCHAR(100),
-    rating INT DEFAULT 5,
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Stock transactions table
-CREATE TABLE IF NOT EXISTS stock_transactions (
-    transaction_id INT AUTO_INCREMENT PRIMARY KEY,
-    material_id INT NOT NULL,
-    transaction_type VARCHAR(50),
-    quantity INT,
-    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    reference_number VARCHAR(100),
-    reference_type VARCHAR(50),
-    created_by VARCHAR(100),
-    FOREIGN KEY (material_id) REFERENCES materials(material_id)
-);
-
--- Purchase orders table
-CREATE TABLE IF NOT EXISTS purchase_orders (
-    po_id INT AUTO_INCREMENT PRIMARY KEY,
-    po_number VARCHAR(100) UNIQUE NOT NULL,
-    supplier_id INT NOT NULL,
-    po_date DATE,
-    expected_delivery_date DATE,
-    actual_delivery_date DATE,
-    total_amount DECIMAL(12,2),
-    status VARCHAR(20) DEFAULT 'PENDING',
-    created_by VARCHAR(100),
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (supplier_id) REFERENCES suppliers(supplier_id)
-);
-
--- Insert sample data
-INSERT INTO materials (material_code, material_name, category_id, min_stock_level, max_stock_level, reorder_point, current_price, status) 
-VALUES 
-('MAT-001', 'Blister Pack (PVC)', 1, 1000, 5000, 1500, 2.50, 'ACTIVE'),
-('MAT-002', 'Bottle 20ml HDPE', 2, 500, 3500, 1000, 1.75, 'ACTIVE'),
-('MAT-003', 'Carton Box', 3, 500, 2000, 1000, 3.00, 'ACTIVE'),
-('MAT-004', 'Label (Printed)', 4, 2000, 8000, 3000, 0.50, 'ACTIVE'),
-('MAT-005', 'Aluminum Foil Strip', 5, 100, 1000, 300, 5.00, 'ACTIVE');
-
-INSERT INTO inventory (material_id, current_quantity, reserved_quantity, warehouse_location) 
-VALUES 
-(1, 5000, 0, 'Rack A1'),
-(2, 3500, 500, 'Rack B2'),
-(3, 2000, 200, 'Rack C3'),
-(4, 8000, 1000, 'Rack D4'),
-(5, 150, 50, 'Rack E5');
-
-INSERT INTO suppliers (supplier_name, contact_person, email, phone, city, payment_terms, rating) 
-VALUES 
-('Pharma Supplies Ltd', 'John Smith', 'john@pharmasupplies.com', '+1-555-0101', 'New York', 'Net 30', 5),
-('Global Packaging Co', 'Sarah Johnson', 'sarah@globalpackaging.com', '+1-555-0102', 'Los Angeles', 'Net 45', 4),
-('Local Materials Inc', 'Mike Brown', 'mike@localmaterials.com', '+1-555-0103', 'Chicago', 'COD', 3);
-
-SHOW TABLES;
-```
-
-### **Step 3 — Clone Repository**
-
-```bash
-git clone https://github.com/rbchy/InventoryControlManagement.git
-cd InventoryControlManagement
-```
-
-### **Step 4 — Add JDBC Driver**
-
-```bash
-# Copy mysql-connector-j-9.7.0.jar to lib/ folder
-cp ~/Downloads/mysql-connector-j-9.7.0/mysql-connector-j-9.7.0.jar lib/
-```
-
-### **Step 5 — Configure Database Connection**
-
-Edit `src/com/pharma/inventory/config/DatabaseConfig.java`:
-
-```java
-private static final String DB_URL = "jdbc:mysql://localhost:3306/pharma_inventory";
-private static final String DB_USER = "root";
-private static final String DB_PASSWORD = "your_mysql_password"; // ← Update here
-```
-
-### **Step 6 — Compile & Run**
-
-```bash
-# Navigate to project directory
-cd ~/eclipse-workspace/InventoryControlManagement
-
-# Compile all classes
-javac -cp lib/mysql-connector-j-9.7.0.jar -d bin \
-  src/com/pharma/inventory/config/DatabaseConfig.java \
-  src/com/pharma/inventory/model/*.java \
-  src/com/pharma/inventory/dao/*.java \
-  src/com/pharma/inventory/service/InventoryService.java \
-  src/com/pharma/inventory/app/InventoryManagementApp.java
-
-# Run the application
-java -cp bin:lib/mysql-connector-j-9.7.0.jar com.pharma.inventory.app.InventoryManagementApp
-```
-
----
-
-## ▶️ How to Run
-
-### **Via IDE (Eclipse/IntelliJ):**
-
-1. Open project in IDE
-2. Right-click `InventoryManagementApp.java` → Run As → Java Application
-3. Application starts with menu interface
-
-### **Via Command Line:**
-
-```bash
-cd ~/eclipse-workspace/InventoryControlManagement
-java -cp bin:lib/mysql-connector-j-9.7.0.jar com.pharma.inventory.app.InventoryManagementApp
-```
-
-### **Menu Options:**
-
-```
-╔════════════════════════════════════════════════════════╗
-║   Pharmaceutical Packaging Inventory Management System  ║
-║           Real-Time Stock Tracking & Supply Chain      ║
-╚════════════════════════════════════════════════════════╝
-
-📌 Menu:
-  1. ইনভেন্টরি ড্যাশবোর্ড (Inventory Dashboard)
-  5. লেনদেন দেখুন (View Transactions)
-  6. সাপ্লায়ার দেখুন (View Suppliers)
-  0. বেরিয়ে যান (Exit)
-
-অপশন নির্বাচন করুন:
-```
+| User | Password | Role |
+|---|---|---|
+| `admin` | `admin123` | ADMIN |
+| `inventory_mgr` | `pass123` | MANAGER |
+| `store_keeper` | `store123` | OPERATOR |
 
 ---
 
 ## 📁 Project Structure
 
-```
-InventoryControlManagement/
-│
-├── src/
-│   └── com/pharma/inventory/
-│       ├── config/
-│       │   └── DatabaseConfig.java          ← JDBC connection manager
-│       │
-│       ├── model/
-│       │   ├── Material.java                ← Material entity
-│       │   ├── Inventory.java               ← Inventory entity
-│       │   ├── Supplier.java                ← Supplier entity
-│       │   ├── StockTransaction.java        ← Transaction entity
-│       │   └── PurchaseOrder.java           ← PO entity
-│       │
-│       ├── dao/
-│       │   ├── MaterialDAO.java             ← Material CRUD & queries
-│       │   ├── InventoryDAO.java            ← Inventory CRUD & queries
-│       │   └── SupplierDAO.java             ← Supplier CRUD & queries
-│       │
-│       ├── service/
-│       │   └── InventoryService.java        ← Business logic layer
-│       │
-│       └── app/
-│           └── InventoryManagementApp.java  ← Main entry point
-│
-├── bin/                                      ← Compiled .class files
-│
-├── lib/
-│   └── mysql-connector-j-9.7.0.jar          ← JDBC driver
-│
+```text
+InventoryControlManagement_JavaMySql/
+├── .github/workflows/ci.yml          # MySQL 8 → mvn verify → console run → GUI launch
+├── src/com/pharma/inventory/
+│   ├── app/       InventoryManagementApp      (console)
+│   ├── gui/       PharmaInventoryGUI + 12 tabs, login / register, theme
+│   ├── service/   InventoryService
+│   ├── dao/       Material · Inventory · Supplier · Category · User · Report DAOs
+│   ├── model/     Material · Inventory · StockStatus · Supplier · StockTransaction · …
+│   ├── util/      PasswordUtil · MaterialValidator
+│   └── config/    DatabaseConfig (env vars / -D properties)
+├── test/com/pharma/inventory/        # unit tests + InventoryDatabaseIT
 ├── docs/
-│   └── 01_database_schema.sql                ← Database DDL
-│
-├── README.md                                 ← This file
-├── .gitignore
-└── LICENSE (MIT)
+│   ├── 01_database_schema.sql        # 11 tables, 3 views, sample data
+│   └── guides/                       # original Bangla README, step-by-step guide, examples
+├── resources/images/                 # optional GUI banner
+├── lib/mysql-connector-j-9.7.0.jar   # driver for Eclipse / run_*.sh
+├── run_gui.sh · run_console.sh · *.launch · .env.example
+└── pom.xml
 ```
 
 ---
 
-## 📊 Database Schema
+## 🧹 Maintenance Log
 
-### **Entity Relationship Diagram:**
+The README was checked against the code, and these issues were fixed:
 
-```
-┌─────────────────┐
-│    materials    │
-├─────────────────┤
-│ material_id (PK)│
-│ material_code   │
-│ material_name   │
-│ category_id     │
-│ description     │
-│ min_stock_level │
-│ max_stock_level │
-│ reorder_point   │
-│ current_price   │
-│ status          │
-└────────┬────────┘
-         │ (1:1)
-         │
-┌────────▼──────────┐
-│   inventory       │
-├───────────────────┤
-│ inventory_id (PK) │
-│ material_id (FK)  │◄──┐
-│ current_quantity  │   │
-│ reserved_quantity │   │ (1:N)
-│ warehouse_location│   │
-└───────────────────┘   │
-         │              │
-         │ (1:N)        │
-┌────────▼──────────────────────┐
-│   stock_transactions          │
-├───────────────────────────────┤
-│ transaction_id (PK)           │
-│ material_id (FK) ─────────────┘
-│ transaction_type              │
-│ quantity                      │
-│ transaction_date              │
-│ reference_number              │
-│ reference_type                │
-│ created_by                    │
-└───────────────────────────────┘
-
-┌──────────────────┐
-│   suppliers      │
-├──────────────────┤
-│ supplier_id (PK) │
-│ supplier_name    │
-│ contact_person   │
-│ email            │
-│ phone            │
-│ address          │
-│ city             │
-│ payment_terms    │
-│ rating           │
-└────────┬─────────┘
-         │ (1:N)
-         │
-┌────────▼──────────────────┐
-│   purchase_orders         │
-├───────────────────────────┤
-│ po_id (PK)                │
-│ supplier_id (FK) ◄────────┘
-│ po_number                 │
-│ po_date                   │
-│ expected_delivery_date    │
-│ actual_delivery_date      │
-│ total_amount              │
-│ status                    │
-│ created_by                │
-└───────────────────────────┘
-```
+| Issue found | Fix |
+|---|---|
+| ❌ **The repository had only a README.** No source, no schema. | Added the GUI and console source, schema, run scripts, launch configs and Bangla guides from the author's Eclipse workspace |
+| 🚦 **Two different stock-status rules.** At exactly min or max, the console said NORMAL while the GUI and reports said CRITICAL / OVERSTOCK. | One `StockStatus` rule. A test compares it with the SQL view for every material. |
+| 🧾 **No validation on materials.** A negative price, max ≤ min, or a reorder point outside min..max were all saved. The Add form's 0 / 0 / 0 defaults gave a permanently OVERSTOCK material. | Added `MaterialValidator`, enforced in `MaterialDAO` on add and update |
+| ➖ **Unknown transaction types removed stock.** Anything other than RECEIPT / RETURN was treated as an issue. | Only RECEIPT / ISSUE / USED / RETURN are accepted |
+| 👻 **Deleted materials kept alerting.** Soft-deleted materials still appeared in Low Stock Alerts and the stock report. | The views now show ACTIVE materials only |
+| 🔍 **Search used wildcards.** `_` and `%` in a search acted as SQL wildcards. | They are escaped |
+| 🚀 **The Eclipse configuration was wrong.** `PharmaInventoryGUI.launch` started **another project** (Bhojan-Aloy), and `.classpath` pointed the source root at `src/com`. | Both fixed |
+| 📝 **The README described things that don't exist:** purchase-order management, role-based access, connection pooling, "manual testing", and a `config/DatabaseConfig.java` password to edit. | Rewritten to match the code. Credentials come from env vars. Purchase orders and roles are on the roadmap. |
+| 🧪 No build file, no tests, no CI | Added a Maven build, 33 tests, console and GUI checks, and GitHub Actions |
 
 ---
 
-## 🌟 Code Quality & Best Practices
+## 📈 Roadmap
 
-| Aspect | Implementation |
-|--------|----------------|
-| **Design Pattern** | DAO + Service + MVC layered architecture |
-| **SOLID Principles** | Single Responsibility, Open/Closed, Liskov Substitution |
-| **Error Handling** | Try-catch with meaningful error messages in Bengali + English |
-| **Code Documentation** | Javadoc comments in Bengali with method descriptions |
-| **Data Validation** | Input validation at DAO and Service layers |
-| **Connection Management** | Proper resource cleanup with try-with-resources |
-| **SQL Injection Prevention** | PreparedStatement usage throughout |
-| **Naming Conventions** | camelCase for variables, PascalCase for classes |
+- [ ] Purchase-order screens (`purchase_orders` / `po_items` tables already exist)
+- [ ] Role-based tabs: ADMIN / MANAGER / OPERATOR currently see the same screens
+- [ ] Block issuing **reserved** stock (today only on-hand may not go below 0)
+- [ ] Physical count screen using `inventory_audit_log`, with variance %
+- [ ] Production orders → automatic USED / RETURN per batch (`production_orders`, `mo_materials`)
+- [ ] Charts in the Welcome tab (stock value by category, status mix)
+- [ ] Save a new material and its opening stock in one transaction
 
 ---
 
-## 🔮 Future Enhancements
+## 🔗 Related Projects
 
-- [ ] 🖥️ **Swing/JavaFX GUI** — Desktop application interface with rich UI components
-- [ ] 🔐 **Role-Based Access Control (RBAC)** — Admin, HR, Employee roles with permission matrix
-- [ ] 📄 **PDF Report Generation** — Export inventory reports as PDF using iText/Apache PDFBox
-- [ ] 📊 **Analytics Dashboard** — Charts, graphs, trend analysis using JFreeChart
-- [ ] 🌐 **REST API** — Spring Boot backend with RESTful endpoints
-- [ ] ⚛️ **React Frontend** — Modern web UI with real-time data binding
-- [ ] 🔔 **Email Notifications** — Low stock alerts, delivery reminders via JavaMail
-- [ ] 📱 **Mobile App** — Android/iOS companion application
-- [ ] ☁️ **Cloud Deployment** — AWS/Azure cloud hosting with auto-scaling
-- [ ] 🔗 **Third-Party Integration** — ERP systems, accounting software, logistics platforms
-- [ ] 📦 **Barcode Scanning** — QR code and barcode support for quick stock operations
-- [ ] 🗂️ **Advanced Filtering** — Date range, category, supplier-wise reports
-- [ ] 🔐 **Audit Trail** — Complete logging of all inventory changes
+| Project | Stack |
+|---|---|
+| 💊 [PPES — Pharmaceutical Packaging Management](https://github.com/rbchy/PPES-Pharmaceutical-Packaging-Management) | Java Swing · MySQL · 49 / 49 in CI |
+| 🧮 [Pharmaceutical Production Management Calculator](https://github.com/rbchy/RbcTcsWorld_Pharmaceuticals_PMC) | Spring Boot · MySQL · 81 / 81 in CI |
+| 💊 [PharmaPack QMS](https://github.com/rbchy/RbcTcsWorld_PharmaPackQMS) | Spring Boot QMS: AQL, deviations, CAPA, reconciliation · 66 / 66 in CI |
+| ☕ [Bhojanaloy POS](https://github.com/rbchy/BhojanAloy-Food-Coffee-Shop-POS-System) | Java Swing + Spring Boot · MySQL · 76 / 76 in CI |
 
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these guidelines:
-
-### **Fork & Clone:**
-```bash
-git clone https://github.com/rbchy/InventoryControlManagement.git
-cd InventoryControlManagement
-git checkout -b feature/your-feature-name
-```
-
-### **Commit & Push:**
-```bash
-git add .
-git commit -m "Add: Detailed description of your feature"
-git push origin feature/your-feature-name
-```
-
-### **Submit Pull Request:**
-- Open PR against `main` branch
-- Include detailed description of changes
-- Reference any related issues
-
-### **Code Style:**
-- Follow Java naming conventions
-- Add Bengali + English comments
-- Write unit tests for new features
-- Update README if needed
-
----
-
-## 📄 License
-
-This project is open-source under the **MIT License**.
-
-```
-MIT License
-
-Copyright (c) 2024 Ranajit Baran Chowdhury
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-```
-
-See [LICENSE](LICENSE) for full details.
-
----
-
-## 💬 Support & Feedback
-
-If you found this project helpful:
-
-- ⭐ **Star the repository** on GitHub
-- 🍴 **Fork** it for your own use
-- 🐛 **Open an issue** for bugs or feature requests
-- 💡 **Submit pull requests** to contribute improvements
-- 📧 **Email** suggestions to chyranajit@gmail.com
-
-### **Get in Touch:**
-- 🌐 **Portfolio:** [rbc6543.wixsite.com/rbc-portfolio](https://rbc6543.wixsite.com/rbc-portfolio)
-- 💼 **LinkedIn:** [linkedin.com/in/rbchy](https://linkedin.com/in/rbchy)
-- 🐙 **GitHub:** [@rbchy](https://github.com/rbchy)
-- 📧 **Email:** chyranajit@gmail.com
-
----
-
-## 🎯 Project Metrics
-
-| Metric | Value |
-|--------|-------|
-| **Total Classes** | 11 |
-| **Lines of Code** | 2,000+ |
-| **Database Tables** | 5 |
-| **DAO Methods** | 25+ |
-| **Java Version** | 17+ |
-| **MySQL Version** | 8.0+ |
-| **Build Tool** | Maven (Optional) |
-| **Test Coverage** | Manual Testing |
-
----
-
-## 📚 Learning Resources
-
-- [Java 17 Documentation](https://docs.oracle.com/javase/17/)
-- [MySQL 8.0 Manual](https://dev.mysql.com/doc/refman/8.0/en/)
-- [JDBC API Guide](https://docs.oracle.com/javase/tutorial/jdbc/)
-- [Design Patterns in Java](https://refactoring.guru/design-patterns/java)
-- [Clean Code by Robert C. Martin](https://www.oreilly.com/library/view/clean-code-a/9780136083238/)
+<sub>All projects: [github.com/rbchy](https://github.com/rbchy)</sub>
 
 ---
 
 ## ⚠️ Disclaimer
 
-This project is designed for educational purposes and small-scale organizational use. For enterprise-level inventory management, consider:
-
-- Consulting with domain experts
-- Implementing advanced security measures
-- Adding comprehensive audit trails
-- Ensuring regulatory compliance
-- Scaling for high-traffic scenarios
+This is a **portfolio / training project** built from hands-on GMP packaging experience. It is **not** a validated GxP system. Stock levels and material handling must follow your site's SOPs.
 
 ---
 
-**Version:** 1.0.0  
-**Last Updated:** July 2026  
-**Maintenance Status:** Active Development  
-**Author:** Ranajit Baran Chowdhury (QA Automation Engineer & Full Stack Developer)
+## 👤 Author
 
----
+<div align="center">
 
-## 🙏 Acknowledgments
+**Ranajit Baran Chowdhury (RB Chowdhury)**
+QA Automation Engineer / SDET · Pharmaceutical Packaging Production (GMP) · West Norriton, Pennsylvania, USA
 
-Special thanks to:
-- MySQL Community for robust database engine
-- Java community for comprehensive documentation
-- Open-source contributors for libraries and tools
-- All users and testers for feedback and suggestions
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/rbchy/)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/rbchy)
+[![Website](https://img.shields.io/badge/Website-rbchy.github.io%2Frbchy-0d9488?style=for-the-badge&logo=githubpages&logoColor=white)](https://rbchy.github.io/rbchy/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-Website-blueviolet?style=for-the-badge&logo=wix&logoColor=white)](https://rbc6543.wixsite.com/rbc-portfolio)
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:chyranajit@gmail.com)
 
-**Happy Coding! 🚀**# InventoryControlManagement_JavaMySql
+<sub>MIT licensed — see [LICENSE](LICENSE).</sub>
+
+⭐ *If this project helps you, a star on the repo is appreciated.*
+
+</div>
